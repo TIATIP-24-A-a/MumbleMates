@@ -18,5 +18,11 @@ jobs:
         with:
           args: >-  # allows you to break string into multiple lines
             --standalone
-            --output=./output/technical-docs.pdf
+            --output=output/technical-docs.pdf
             ./docs/technical/main.tex
+
+      - name: 📤 Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+            name: technical-docs
+            path: output/technical-docs.pdf
