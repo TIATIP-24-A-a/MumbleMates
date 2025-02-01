@@ -1,0 +1,22 @@
+name: 📄 Technical Documentation
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  convert_via_pandoc:
+    name: "📦 Create technical documentation PDF"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Convert to PDF
+        uses: docker://pandoc/core:3.5
+        with:
+          args: >-  # allows you to break string into multiple lines
+            --standalone
+            --output=./output/technical-docs.pdf
+            ./docs/technical/main.tex
