@@ -3,6 +3,7 @@ name: 📄 Technical Documentation
 on:
   push:
     branches: [ "main" ]
+    paths: [ "docs/technical/**" ]
   workflow_dispatch:
 
 jobs:
@@ -14,15 +15,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔧 Convert to PDF
-        uses: docker://pandoc/core:3.5
+        uses: docker://pandoc/latex:3.5
         with:
-          args: >-  # allows you to break string into multiple lines
-            --standalone
-            --output=output/technical-docs.pdf
+          entrypoint: latexmk
+          args: >- 
+            -pdf
+            -cd
+            -lualatex 
+            -recorder 
+            -jobname=technical-docs 
+            -output-directory=./output 
+            -interaction=nonstopmode 
             ./docs/technical/main.tex
 
       - name: 📤 Upload PDF
         uses: actions/upload-artifact@v4
         with:
             name: technical-docs
-            path: output/technical-docs.pdf
+            path: ./docs/technical/output/technical-docs.pdf
