@@ -23,19 +23,19 @@ jobs:
 
       - name: 🏗️ Build
         run: |
-          go build -v ./...
+          go build -v ./
 
       - name: 🧪 Test
         run: |
-          go test -v ./...
+          go test -v ./
 
       - name: 📝 Format
         run: |
-          go fmt ./...
+          go fmt ./
 
       - name: 🐦 Vet
         run: |
-          go vet ./...
+          go vet ./
 
       - name: 🔎 Staticcheck
         uses: dominikh/staticcheck-action@v1.2.0
