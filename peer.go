@@ -103,7 +103,7 @@ func (c *ChatNode) HandleUserInput() {
 				}
 			} else {
 				// After sending, print the message sent
-				fmt.Println("Me:", message) // display as "Me: <message>"
+				fmt.Printf("Me: %s\n", message) // New line for "Me" message
 			}
 		}
 	}
