@@ -31,7 +31,7 @@ jobs:
 
       - name: 📝 Format
         run: |
-          go fmt -d .
+          gofmt -d -s .
 
       - name: 🐦 Vet
         run: |
