@@ -10,28 +10,34 @@ jobs:
   convert_via_pandoc:
     name: "📦 Create technical documentation PDF"
     runs-on: ubuntu-22.04
+
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - run: cd docs/technical
+      - name: Tectonic Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Tectonic
+          key: ${{ runner.os }}-tectonic-${{ hashFiles('**/*.tex') }}
+          restore-keys: |
+            ${{ runner.os }}-tectonic-
+
+      - name: 📦 Setup Tectonic
+        uses: wtfjoke/setup-tectonic@v3.1.2
+
+      - run: mkdir output
 
       - name: 🔧 Convert to PDF
-        uses: docker://pandoc/latex:3.5
-        with:
-          entrypoint: latexmk
-          args: >- 
-            -pdf
-            -cd
-            -lualatex 
-            -recorder 
-            -jobname=technical-docs 
-            -output-directory=./output 
-            -interaction=nonstopmode 
-            ./docs/technical/main.tex
+        run: | 
+          tectonic \
+            ./docs/technical/main.tex \
+            --outdir ./output
+
+      - run: mv ./output/main.pdf ./output/technical-docs.pdf
 
       - name: 📤 Upload PDF
         uses: actions/upload-artifact@v4
         with:
             name: technical-docs
-            path: ./docs/technical/output/technical-docs.pdf
+            path: ./output/technical-docs.pdf

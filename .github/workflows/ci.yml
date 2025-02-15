@@ -1,0 +1,43 @@
+name: 🚦 Go CI
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: 🚦 CI
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🧑‍🍳 Set up Go
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version-file: "./go.mod"
+
+      - name: 🏗️ Build
+        run: |
+          go build -v ./...
+
+      - name: 🧪 Test
+        run: |
+          go test -v ./...
+
+      - name: 📝 Format
+        run: |
+          go fmt -d .
+
+      - name: 🐦 Vet
+        run: |
+          go vet ./...
+
+      - name: 🔎 Staticcheck
+        uses: dominikh/staticcheck-action@v1.2.0
+        with:
+          install-go: false

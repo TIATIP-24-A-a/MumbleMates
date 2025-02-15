@@ -2,18 +2,19 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{authblk}
+\usepackage[german]{babel}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
 
-\title{Projektarbeit - P2P Chat}
-\author{
-    Tim Ineichen
-    \and
-    Tuan Binh Tran
-}
-\date{\today}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}
 
 \begin{document}
 
-\maketitle
+
+\input{title.tex}
 \newpage
 
 \renewcommand{\contentsname}{Inhaltsverzeichnis}
@@ -26,5 +27,8 @@
 \input{sections/04-mathematical-formula.tex}
 \input{sections/05-table-example.tex}
 \input{sections/06-conclusion.tex}
+\input{sections/07-glossary.tex}
+\input{sections/08-references.tex}
+\input{sections/09-tools.tex}
 
 \end{document}
