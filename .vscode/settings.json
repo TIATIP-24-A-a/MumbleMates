@@ -1,3 +1,17 @@
 {
-    "latex-workshop.latex.recipe.default": "tectonic"
+    "latex-workshop.latex.recipe.default": "tectonic",
+    "[go]": {
+        "editor.insertSpaces": false,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "golang.go"
+    },
+    "go.formatFlags": [
+        "-s"
+    ],
+    "go.formatTool": "gofmt",
+    "go.survey.prompt": false,
+    "gopls": { "ui.semanticTokens": true }
 }
