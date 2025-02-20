@@ -17,13 +17,14 @@ import (
 	peerstore "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	multiaddr "github.com/multiformats/go-multiaddr"
-	// "github.com/TIATIP-24-A-a/MumbleMates/internal/chat"
 )
 
 type ChatNode struct {
 	Node   host.Host
 	Stream network.Stream
 }
+
+const END_BYTE = byte('\n')
 
 var name string
 
@@ -71,34 +72,43 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 	buf := bufio.NewReader(stream)
 
 	for {
-		responseBytes, err := buf.ReadString('\n')
-		event := chat.BaseEvent{}
-		fmt.Println(responseBytes)
-		// json.Unmarshal(responseBytes, &event)
-
+		responseBytes, err := buf.ReadString(END_BYTE)
 		if err != nil {
-			if err.Error() == "EOF" {
-				fmt.Println("stream closed by remote peer")
-				break
-			} else {
-				fmt.Println("error reading from stream:", err)
-				break
-			}
+			fmt.Println("error reading from stream:", err)
+			break
 		}
 
-		// println(event)
+		if !json.Valid([]byte(responseBytes)) {
+			fmt.Println("Received invalid JSON: ", responseBytes)
+			continue
+		}
+
+		var event chat.BaseEvent
+		err = json.Unmarshal([]byte(responseBytes), &event)
+		if err != nil {
+			fmt.Println("error unmarshalling event:", err)
+			continue
+		}
 
 		// Print only messages received from remote peer
-		if event.Type == "message" {
-			messageEvent := chat.MessageEvent{}
-			// json.Unmarshal(responseBytes, &messageEvent)
-			fmt.Println(messageEvent.Event.Name, ": ", messageEvent.Message)
+		if event.GetType() == "message" {
+			var messagePayload chat.MessagePayload
+			err = json.Unmarshal(event.Payload, &messagePayload)
+			if err != nil {
+				fmt.Println("error unmarshalling message payload:", err)
+				continue
+			}
+
+			fmt.Println(event.GetName(), ": ", messagePayload.Message)
+		} else {
+			fmt.Println("Unknown event type: ", event.Type)
 		}
 	}
 }
 
 func (c *ChatNode) HandleUserInput() {
 	reader := bufio.NewReader(os.Stdin)
+	encoder := json.NewEncoder(c.Stream)
 	for {
 		fmt.Print(name, " (me): ")
 		message, _ := reader.ReadString('\n')
@@ -109,10 +119,8 @@ func (c *ChatNode) HandleUserInput() {
 
 		// Send the typed message to the remote peer over the stream
 		if c.Stream != nil {
-			payload := chat.NewMessage(name, message)
-			err := json.NewEncoder(c.Stream).Encode(payload)
-
-			// _, err := c.Stream.Write(bytes.NewBuffer(payload))
+			message := chat.NewMessage(name, message)
+			err := encoder.Encode(message)
 			if err != nil {
 				fmt.Println("error writing to stream:", err)
 				// Handle stream reset or closing
@@ -121,9 +129,6 @@ func (c *ChatNode) HandleUserInput() {
 					c.Stream.Close()
 					return
 				}
-			} else {
-				// After sending, print the message sent
-				// fmt.Println(name, " (me): ", message) // New line for "Me" message
 			}
 		}
 	}
@@ -159,7 +164,7 @@ func (c *ChatNode) Start() error {
 }
 
 func askForName() string {
-	MAX_NAME_LENGTH := 20
+	const MAX_NAME_LENGTH = 20
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter your name (max 20 length): ")
@@ -181,9 +186,7 @@ func askForName() string {
 }
 
 func main() {
-
 	name = askForName()
-
 	fmt.Println("Hello ", name, "👋")
 
 	chatNode, err := NewChatNode()

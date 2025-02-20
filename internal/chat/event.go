@@ -11,12 +11,14 @@ type Event interface {
 	GetType() string
 	GetName() string
 	ToJSON() ([]byte, error)
+	FromJSON(data []byte) error
 }
 
 type BaseEvent struct {
-	ID   uuid.UUID
-	Type string
-	Name string
+	ID      uuid.UUID       `json:"id"`
+	Type    string          `json:"type"`
+	Name    string          `json:"name"`
+	Payload json.RawMessage `json:"payload"`
 }
 
 func (e *BaseEvent) GetID() uuid.UUID {
@@ -35,18 +37,21 @@ func (e *BaseEvent) ToJSON() ([]byte, error) {
 	return json.Marshal(e)
 }
 
-type MessageEvent struct {
-	Event   BaseEvent
-	Message string
+func (e *BaseEvent) FromJSON(data []byte) error {
+	return json.Unmarshal(data, e)
 }
 
-func NewMessage(name, message string) *MessageEvent {
-	return &MessageEvent{
-		Event: BaseEvent{
-			ID:   uuid.New(),
-			Type: "message",
-			Name: name,
-		},
-		Message: message,
+type MessagePayload struct {
+	Message string `json:"message"`
+}
+
+func NewMessage(name string, message string) *BaseEvent {
+	payload, _ := json.Marshal(MessagePayload{Message: message})
+
+	return &BaseEvent{
+		ID:      uuid.New(),
+		Type:    "message",
+		Name:    name,
+		Payload: payload,
 	}
 }
