@@ -9,8 +9,6 @@ import (
 	chat "github.com/TIATIP-24-A-a/MumbleMates/internal"
 )
 
-var name string
-
 func askForName() string {
 	const MAX_NAME_LENGTH = 20
 
@@ -34,7 +32,7 @@ func askForName() string {
 }
 
 func main() {
-	name = askForName()
+	name := askForName()
 	fmt.Println("Hello ", name, "👋")
 
 	chatNode, err := chat.NewChatNode(name)
