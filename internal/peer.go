@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"bufio"
@@ -22,19 +22,19 @@ import (
 type ChatNode struct {
 	Node   host.Host
 	Stream network.Stream
+	name   string
 }
 
 const END_BYTE = byte('\n')
 
-var name string
-
-func NewChatNode() (*ChatNode, error) {
+func NewChatNode(name string) (*ChatNode, error) {
 	node, err := libp2p.New(libp2p.ListenAddrStrings())
 	if err != nil {
 		return nil, err
 	}
 	return &ChatNode{
 		Node: node,
+		name: name,
 	}, nil
 }
 
@@ -110,7 +110,7 @@ func (c *ChatNode) HandleUserInput() {
 	reader := bufio.NewReader(os.Stdin)
 	encoder := json.NewEncoder(c.Stream)
 	for {
-		fmt.Print(name, " (me): ")
+		fmt.Print(c.name, " (me): ")
 		message, _ := reader.ReadString('\n')
 		message = strings.TrimSpace(message)
 		if message == "" {
@@ -119,7 +119,7 @@ func (c *ChatNode) HandleUserInput() {
 
 		// Send the typed message to the remote peer over the stream
 		if c.Stream != nil {
-			message := event.NewMessage(name, message)
+			message := event.NewMessage(c.name, message)
 			err := encoder.Encode(message)
 			if err != nil {
 				fmt.Println("error writing to stream:", err)
@@ -161,50 +161,4 @@ func (c *ChatNode) Start() error {
 	}
 
 	return nil
-}
-
-func askForName() string {
-	const MAX_NAME_LENGTH = 20
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter your name (max 20 length): ")
-	name, _ := reader.ReadString('\n')
-
-	trimmedName := strings.TrimSpace(name)
-
-	if trimmedName == "" {
-		fmt.Println("Name cannot be empty. Please try again.")
-		return askForName()
-	}
-
-	if len(trimmedName) > MAX_NAME_LENGTH {
-		fmt.Println("Name cannot be longer than 20 characters. Please try again.")
-		return askForName()
-	}
-
-	return trimmedName
-}
-
-func main() {
-	name = askForName()
-	fmt.Println("Hello ", name, "👋")
-
-	chatNode, err := NewChatNode()
-	if err != nil {
-		panic(err)
-	}
-
-	address, err := chatNode.GetAddress()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("libp2p node address:")
-	fmt.Println(address)
-	fmt.Println()
-
-	// Start the chat node
-	if err := chatNode.Start(); err != nil {
-		panic(err)
-	}
 }
