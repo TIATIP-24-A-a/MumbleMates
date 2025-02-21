@@ -1,4 +1,4 @@
-package chat
+package event
 
 import (
 	"encoding/json"
@@ -39,19 +39,4 @@ func (e *BaseEvent) ToJSON() ([]byte, error) {
 
 func (e *BaseEvent) FromJSON(data []byte) error {
 	return json.Unmarshal(data, e)
-}
-
-type MessagePayload struct {
-	Message string `json:"message"`
-}
-
-func NewMessage(name string, message string) *BaseEvent {
-	payload, _ := json.Marshal(MessagePayload{Message: message})
-
-	return &BaseEvent{
-		ID:      uuid.New(),
-		Type:    "message",
-		Name:    name,
-		Payload: payload,
-	}
 }

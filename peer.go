@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/TIATIP-24-A-a/MumbleMates/internal/chat"
+	"github.com/TIATIP-24-A-a/MumbleMates/internal/event"
 	"github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p/core/host"
 	network "github.com/libp2p/go-libp2p/core/network"
@@ -83,25 +83,25 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 			continue
 		}
 
-		var event chat.BaseEvent
-		err = json.Unmarshal([]byte(responseBytes), &event)
+		var baseEvent event.BaseEvent
+		err = json.Unmarshal([]byte(responseBytes), &baseEvent)
 		if err != nil {
 			fmt.Println("error unmarshalling event:", err)
 			continue
 		}
 
 		// Print only messages received from remote peer
-		if event.GetType() == "message" {
-			var messagePayload chat.MessagePayload
-			err = json.Unmarshal(event.Payload, &messagePayload)
+		if baseEvent.GetType() == "message" {
+			var messagePayload event.MessagePayload
+			err = json.Unmarshal(baseEvent.Payload, &messagePayload)
 			if err != nil {
 				fmt.Println("error unmarshalling message payload:", err)
 				continue
 			}
 
-			fmt.Println(event.GetName(), ": ", messagePayload.Message)
+			fmt.Println(baseEvent.GetName(), ": ", messagePayload.Message)
 		} else {
-			fmt.Println("Unknown event type: ", event.Type)
+			fmt.Println("Unknown event type: ", baseEvent.Type)
 		}
 	}
 }
@@ -119,7 +119,7 @@ func (c *ChatNode) HandleUserInput() {
 
 		// Send the typed message to the remote peer over the stream
 		if c.Stream != nil {
-			message := chat.NewMessage(name, message)
+			message := event.NewMessage(name, message)
 			err := encoder.Encode(message)
 			if err != nil {
 				fmt.Println("error writing to stream:", err)
