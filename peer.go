@@ -99,7 +99,7 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 				continue
 			}
 
-			fmt.Println(baseEvent.GetName(), ": ", messagePayload.Message)
+			fmt.Printf("%s: %s\n", baseEvent.Name, messagePayload.Message)
 		} else {
 			fmt.Println("Unknown event type: ", baseEvent.Type)
 		}
