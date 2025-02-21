@@ -13,5 +13,8 @@
     ],
     "go.formatTool": "gofmt",
     "go.survey.prompt": false,
-    "gopls": { "ui.semanticTokens": true }
+    "gopls": { 
+        "ui.semanticTokens": true, 
+        "ui.diagnostic.staticcheck": true 
+    }
 }
