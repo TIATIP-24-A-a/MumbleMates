@@ -16,8 +16,7 @@ import (
 	network "github.com/libp2p/go-libp2p/core/network"
 	peerstore "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
-)
+	)
 
 type ChatNode struct {
 	Node  host.Host
@@ -171,28 +170,19 @@ func (c *ChatNode) Start() error {
 	return nil
 }
 
-func setupMDNSDiscovery(chatNode *ChatNode) error {
-	service := mdns.NewMdnsService(chatNode.Node, SERVICE_TAG, &mdnsNotifee{c: *chatNode})
-	return service.Start()
-}
-
-type mdnsNotifee struct {
-	c ChatNode
-}
-
-func (n *mdnsNotifee) HandlePeerFound(pi peerstore.AddrInfo) {
-	isSelf := pi.ID == n.c.Node.ID()
+func (c *ChatNode) HandlePeerFound(pi peerstore.AddrInfo) {
+	isSelf := pi.ID == c.Node.ID()
 	if isSelf {
 		return
 	}
 
-	isConnected := n.c.peers[pi.ID] != nil
+	isConnected := c.peers[pi.ID] != nil
 	if isConnected {
 		fmt.Println("Already connected to peer:", pi.ID)
 		return
 	}
 
-	if err := n.c.ConnectToPeer(pi); err != nil {
+	if err := c.ConnectToPeer(pi); err != nil {
 		fmt.Println("error connecting to peer:", err)
 	} else {
 		fmt.Println("connected to peer:", pi.ID)
