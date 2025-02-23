@@ -13,9 +13,7 @@ func TestCreateNode(t *testing.T) {
 
 	if node == nil {
 		t.Errorf("Node shoud not be nil")
-	}
-
-	if node.name != "test" {
+	} else if node.name != "test" {
 		t.Errorf("Node name should be 'test', got %s", node.name)
 	}
 }
