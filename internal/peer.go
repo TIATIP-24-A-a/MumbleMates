@@ -123,19 +123,13 @@ func (c *ChatNode) HandleUserInput() {
 			encoder := json.NewEncoder(stream)
 			message := event.NewMessage(c.name, message)
 			err := encoder.Encode(message)
+
 			if err != nil {
 				fmt.Println("error writing to stream:", err)
 				// Handle stream reset or closing
 
-				if err.Error() == "write on closed stream" {
+				if err.Error() == "write on closed stream" || err.Error() == "stream reset" {
 					fmt.Println("stream closed detected, closing stream.")
-					stream.Close()
-					delete(c.peers, peerId)
-					continue
-				}
-
-				if err.Error() == "stream reset" {
-					fmt.Println("stream reset detected, closing stream.")
 					stream.Close()
 					delete(c.peers, peerId)
 					continue
