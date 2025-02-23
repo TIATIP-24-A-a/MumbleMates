@@ -16,7 +16,7 @@ import (
 	network "github.com/libp2p/go-libp2p/core/network"
 	peerstore "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	)
+)
 
 type ChatNode struct {
 	Node  host.Host
@@ -75,7 +75,6 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 	for {
 		responseBytes, err := buf.ReadString(END_BYTE)
 		if err != nil {
-
 			fmt.Println("error reading from stream:", err)
 			break
 		}
@@ -132,14 +131,14 @@ func (c *ChatNode) HandleUserInput() {
 					fmt.Println("stream closed detected, closing stream.")
 					stream.Close()
 					delete(c.peers, peerId)
-					return
+					continue
 				}
 
 				if err.Error() == "stream reset" {
 					fmt.Println("stream reset detected, closing stream.")
 					stream.Close()
 					delete(c.peers, peerId)
-					return
+					continue
 				}
 			}
 		}
