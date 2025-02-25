@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/TIATIP-24-A-a/MumbleMates/internal/event"
 	"github.com/libp2p/go-libp2p"
@@ -111,17 +112,21 @@ func (c *ChatNode) HandleUserInput() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print(c.name, " (me): ")
 		message, _ := reader.ReadString('\n')
 		message = strings.TrimSpace(message)
 		if message == "" {
 			continue
 		}
+		currentTime := time.Now().Format("15:04")
+		messageWithTime := fmt.Sprintf("[%s] %s", currentTime, message)
 
+		localMessage := fmt.Sprintf("%s (me): [%s] %s", c.name, currentTime, message)
+
+		fmt.Println(localMessage)
 		// Send the typed message to the every peer
 		for peerId, stream := range c.peers {
 			encoder := json.NewEncoder(stream)
-			message := event.NewMessage(c.name, message)
+			message := event.NewMessage(c.name, messageWithTime)
 			err := encoder.Encode(message)
 
 			if err != nil {
