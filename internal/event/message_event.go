@@ -1,22 +1,19 @@
 package event
 
 import (
-	"encoding/json"
-
-	"github.com/google/uuid"
+	"github.com/TIATIP-24-A-a/MumbleMates/internal/peer"
 )
 
 type MessagePayload struct {
 	Message string `json:"message"`
 }
 
-func NewMessage(name string, message string) *BaseEvent {
-	payload, _ := json.Marshal(MessagePayload{Message: message})
-
-	return &BaseEvent{
-		ID:      uuid.New(),
-		Type:    "message",
-		Name:    name,
-		Payload: payload,
-	}
+func NewMessage(name string, message string) *Event {
+	return newEvent(
+		MessageEventType,
+		peer.PeerInfo{
+			Name: name,
+		},
+		message,
+	)
 }
