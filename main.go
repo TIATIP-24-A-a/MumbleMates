@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	chat "github.com/TIATIP-24-A-a/MumbleMates/internal"
+	"github.com/TIATIP-24-A-a/MumbleMates/cmd"
 )
 
 func askForName() string {
@@ -32,25 +32,8 @@ func askForName() string {
 }
 
 func main() {
-	name := askForName()
-	fmt.Println("Hello ", name, "👋")
-
-	chatNode, err := chat.NewChatNode(name)
-	if err != nil {
-		panic(err)
-	}
-
-	address, err := chatNode.GetAddress()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("libp2p node address:")
-	fmt.Println(address)
-	fmt.Println()
-
-	// Start the chat node
-	if err := chatNode.Start(); err != nil {
-		panic(err)
+	if _, err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v", err)
+		os.Exit(1)
 	}
 }
