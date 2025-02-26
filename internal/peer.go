@@ -5,13 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
-	"os/signal"
-	"strings"
-	"syscall"
-	"time"
 
 	"github.com/TIATIP-24-A-a/MumbleMates/internal/event"
+	"github.com/TIATIP-24-A-a/MumbleMates/internal/peer"
 	"github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p/core/host"
 	network "github.com/libp2p/go-libp2p/core/network"
@@ -20,14 +16,18 @@ import (
 )
 
 type ChatNode struct {
-	Node  host.Host
-	name  string
-	peers map[peerstore.ID]network.Stream
+	Node     host.Host
+	name     string
+	peers    map[peerstore.ID]network.Stream
+	Events   chan event.Event
+	PeerInfo peer.PeerInfo
 }
 
-const END_BYTE = byte('\n')
-const SERVICE_TAG = "mumblemates-chat"
-const PROTOCOL_ID = protocol.ID("/chat/1.0.0")
+const (
+	END_BYTE    = byte('\n')
+	SERVICE_TAG = "mumblemates-chat"
+	PROTOCOL_ID = protocol.ID("/chat/1.0.0")
+)
 
 func NewChatNode(name string) (*ChatNode, error) {
 	node, err := libp2p.New(libp2p.ListenAddrStrings())
@@ -35,9 +35,10 @@ func NewChatNode(name string) (*ChatNode, error) {
 		return nil, err
 	}
 	return &ChatNode{
-		Node:  node,
-		peers: make(map[peerstore.ID]network.Stream),
-		name:  name,
+		Node:   node,
+		Events: make(chan event.Event),
+		peers:  make(map[peerstore.ID]network.Stream),
+		name:   name,
 	}, nil
 }
 
@@ -85,82 +86,39 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 			continue
 		}
 
-		var baseEvent event.BaseEvent
+		var baseEvent event.Event
 		err = json.Unmarshal([]byte(responseBytes), &baseEvent)
 		if err != nil {
 			fmt.Println("error unmarshalling event:", err)
 			continue
 		}
 
-		// Print only messages received from remote peer
-		if baseEvent.GetType() == "message" {
-			var messagePayload event.MessagePayload
-			err = json.Unmarshal(baseEvent.Payload, &messagePayload)
-			if err != nil {
-				fmt.Println("error unmarshalling message payload:", err)
-				continue
-			}
-
-			fmt.Printf("%s: %s\n", baseEvent.Name, messagePayload.Message)
-		} else {
-			fmt.Println("Unknown event type: ", baseEvent.Type)
-		}
+		c.Events <- baseEvent
 	}
 }
 
-func (c *ChatNode) HandleUserInput() {
-	reader := bufio.NewReader(os.Stdin)
-
-	for {
-		message, _ := reader.ReadString('\n')
-		message = strings.TrimSpace(message)
-		if message == "" {
-			continue
-		}
-		currentTime := time.Now().Format("15:04")
-		messageWithTime := fmt.Sprintf("[%s] %s", currentTime, message)
-
-		localMessage := fmt.Sprintf("%s (me): [%s] %s", c.name, currentTime, message)
-
-		fmt.Println(localMessage)
-		// Send the typed message to the every peer
-		for peerId, stream := range c.peers {
-			encoder := json.NewEncoder(stream)
-			message := event.NewMessage(c.name, messageWithTime)
-			err := encoder.Encode(message)
-
-			if err != nil {
-				fmt.Println("error writing to stream:", err)
-				// Handle stream reset or closing
-
-				if err.Error() == "write on closed stream" || err.Error() == "stream reset" {
-					fmt.Println("stream closed detected, closing stream.")
-					stream.Close()
-					delete(c.peers, peerId)
-					continue
-				}
-			}
+func (c *ChatNode) SendEvent(e event.Event) error {
+	for _, stream := range c.peers {
+		encoder := json.NewEncoder(stream)
+		err := encoder.Encode(e)
+		if err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
 func (c *ChatNode) Start() error {
 	c.Node.SetStreamHandler(PROTOCOL_ID, c.HandleStream)
 
-	// Start the user input handler in a separate goroutine
-	go c.HandleUserInput()
-
 	if err := setupMDNSDiscovery(c); err != nil {
 		return err
 	}
 
-	// wait for a SIGINT or SIGTERM signal
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	<-ch
-	fmt.Println("Received signal, shutting down...")
+	return nil
+}
 
-	// shut the node down
+func (c *ChatNode) Stop() error {
 	if err := c.Node.Close(); err != nil {
 		return err
 	}
@@ -176,13 +134,10 @@ func (c *ChatNode) HandlePeerFound(pi peerstore.AddrInfo) {
 
 	isConnected := c.peers[pi.ID] != nil
 	if isConnected {
-		fmt.Println("Already connected to peer:", pi.ID)
 		return
 	}
 
 	if err := c.ConnectToPeer(pi); err != nil {
 		fmt.Println("error connecting to peer:", err)
-	} else {
-		fmt.Println("connected to peer:", pi.ID)
 	}
 }
