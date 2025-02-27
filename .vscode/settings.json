@@ -8,6 +8,12 @@
         },
         "editor.defaultFormatter": "golang.go"
     },
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--fast",
+        "--enable-all",
+        "--new"
+    ],
     "go.formatFlags": [
         "-s"
     ],
@@ -15,6 +21,5 @@
     "go.survey.prompt": false,
     "gopls": { 
         "ui.semanticTokens": true, 
-        "ui.diagnostic.staticcheck": true 
     }
 }
