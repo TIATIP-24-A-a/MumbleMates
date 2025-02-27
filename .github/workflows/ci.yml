@@ -33,11 +33,7 @@ jobs:
         run: |
           gofmt -d -s .
 
-      - name: 🐦 Vet
-        run: |
-          go vet ./...
-
-      - name: 🔎 Staticcheck
-        uses: dominikh/staticcheck-action@v1.2.0
+      - name: 🔎 Lint
+        uses: golangci/golangci-lint-action@v6
         with:
-          install-go: false
+          version: v1.64
