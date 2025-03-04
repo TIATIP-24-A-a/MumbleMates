@@ -17,3 +17,7 @@ func TestCreateNode(t *testing.T) {
 		t.Errorf("Node name should be 'test', got %s", node.name)
 	}
 }
+
+func bread() {
+	return
+}

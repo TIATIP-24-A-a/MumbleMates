@@ -8,18 +8,14 @@
         },
         "editor.defaultFormatter": "golang.go"
     },
-    "go.lintTool": "golangci-lint",
-    "go.lintFlags": [
-        "--fast",
-        "--enable-all",
-        "--new"
-    ],
+    "go.lintTool": "staticcheck",
     "go.formatFlags": [
         "-s"
     ],
     "go.formatTool": "gofmt",
     "go.survey.prompt": false,
     "gopls": { 
-        "ui.semanticTokens": true, 
+        "ui.semanticTokens": true,
+        "ui.diagnostic.staticcheck": true
     }
 }

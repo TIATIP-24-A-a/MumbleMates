@@ -67,7 +67,6 @@ Type a message and press Enter to send.`)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	chatNode.Start()
 
 	return model{
