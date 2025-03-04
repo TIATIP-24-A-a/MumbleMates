@@ -8,13 +8,14 @@
         },
         "editor.defaultFormatter": "golang.go"
     },
+    "go.lintTool": "staticcheck",
     "go.formatFlags": [
         "-s"
     ],
     "go.formatTool": "gofmt",
     "go.survey.prompt": false,
     "gopls": { 
-        "ui.semanticTokens": true, 
-        "ui.diagnostic.staticcheck": true 
+        "ui.semanticTokens": true,
+        "ui.diagnostic.staticcheck": true
     }
 }
