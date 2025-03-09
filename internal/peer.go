@@ -123,6 +123,8 @@ func (c *ChatNode) Stop() error {
 		return err
 	}
 
+	close(c.Events)
+
 	return nil
 }
 
