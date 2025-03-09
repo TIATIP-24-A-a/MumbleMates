@@ -110,15 +110,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.textarea.SetWidth(msg.Width)
 		m.viewport.Height = msg.Height - m.textarea.Height() - lipgloss.Height(gap)
 
-		if len(m.messages) > 0 {
-			// Wrap content before setting it.
-			var messages []string
-			for _, m := range m.messages {
-				messages = append(messages, m.content+"\n")
-			}
-			m.viewport.SetContent(lipgloss.NewStyle().Width(m.viewport.Width).Render(strings.Join(messages, "\n")))
-		}
-		m.viewport.GotoBottom()
+		m.refreshMessagesView()
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
@@ -139,7 +131,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.messages = append(m.messages, message)
 			m.chatNode.SendEvent(*messageEvent)
 
-			m.RefreshMessagesView()
+			m.refreshMessagesView()
 			m.textarea.Reset()
 		}
 	case event.Event:
@@ -158,7 +150,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				time:    msg.Timestamp,
 			})
 
-			m.RefreshMessagesView()
+			m.refreshMessagesView()
 		}
 
 	case tea.QuitMsg:
@@ -183,7 +175,11 @@ func (m model) View() string {
 	)
 }
 
-func (m model) RefreshMessagesView() {
+func (m *model) refreshMessagesView() {
+	if len(m.messages) == 0 {
+		return
+	}
+
 	var messages []string
 	for _, m := range m.messages {
 		messages = append(messages, m.content)
