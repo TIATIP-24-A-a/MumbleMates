@@ -11,13 +11,14 @@
             "mode": "debug",
             "program": "${workspaceFolder}",
             "console": "externalTerminal"
-        },        
+        },
         {
-            "name": "Attach to Process",
+            "name": "Debug Package",
             "type": "go",
             "request": "attach",
             "mode": "local",
-            "processId": "${command:pickGoProcess}",
-        }
+            "processId": 0,
+            "preLaunchTask": "go: build debug",
+        },
     ]
 }

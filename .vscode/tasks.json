@@ -1,0 +1,47 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "go",
+			"label": "go: build debug",
+			"command": "build",
+			"args": [
+				"-gcflags",
+				"all=-N -l",
+				".",
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "build",
+			"icon": {
+				"id": "wrench",
+				"color": "terminal.ansiYellow"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Run Package",
+			"command": "wt",
+			"args": [
+				"cmd", "/c", "${workspaceFolder}/MumbleMates.exe"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"dependsOn": "go: build debug", 
+			"windows": {
+				"command": "wt",
+				"args": [
+					"cmd", "/c", "${workspaceFolder}/MumbleMates.exe"
+				],
+			},
+			"icon": {
+				"id": "play",
+				"color": "terminal.ansiGreen"
+			}
+		}
+	]
+}
