@@ -20,7 +20,7 @@ const gap = "\n\n"
 var program *tea.Program
 
 type (
-	errMsg error
+	errMsg func() error
 )
 
 type model struct {
@@ -30,6 +30,8 @@ type model struct {
 	senderStyle   lipgloss.Style
 	receiverStyle lipgloss.Style
 	eventStyle    lipgloss.Style
+
+	name string
 
 	chatNode chat.ChatNode
 	err      error
@@ -42,7 +44,7 @@ type Message struct {
 	time    time.Time
 }
 
-func initialModel() model {
+func initialModel(name string) model {
 	ta := textarea.New()
 	ta.Placeholder = "Send a message..."
 	ta.Focus()
@@ -62,8 +64,7 @@ func initialModel() model {
 	vp.SetContent(`Welcome to the chat room!
 Type a message and press Enter to send.`)
 
-	// TODO: Prompt for name
-	chatNode, err := chat.NewChatNode("User")
+	chatNode, err := chat.NewChatNode(name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,6 +78,7 @@ Type a message and press Enter to send.`)
 		senderStyle:   lipgloss.NewStyle().Foreground(lipgloss.Color("5")),
 		receiverStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("1")),
 		eventStyle:    lipgloss.NewStyle().Foreground(lipgloss.Color("3")),
+		name:          name,
 		chatNode:      *chatNode,
 		err:           nil,
 	}
@@ -104,13 +106,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.viewport, vpCmd = m.viewport.Update(msg)
 
 	switch msg := msg.(type) {
-
 	case tea.WindowSizeMsg:
-		m.viewport.Width = msg.Width
-		m.textarea.SetWidth(msg.Width)
-		m.viewport.Height = msg.Height - m.textarea.Height() - lipgloss.Height(gap)
+		m.onResize(msg)
 
-		m.refreshMessagesView()
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
@@ -121,13 +119,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break
 			}
 
+			formattedTime := m.eventStyle.Render(time.Now().Format("15:04"))
+			receiver := m.senderStyle.Render(fmt.Sprintf("%s (You):", m.name))
+			content := fmt.Sprintf("%s [%s] %s", receiver, formattedTime, m.textarea.Value())
+
 			message := Message{
 				id:      uuid.New(),
-				content: m.senderStyle.Render("You: ") + m.textarea.Value(),
-				sender:  "You",
+				content: content,
+				sender:  m.name,
 				time:    time.Now(),
 			}
-			messageEvent := event.NewMessage("User", m.textarea.Value())
+			messageEvent := event.NewMessage(m.name, m.textarea.Value())
+
 			m.messages = append(m.messages, message)
 			m.chatNode.SendEvent(*messageEvent)
 
@@ -158,7 +161,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	// We handle errors just like any other message
 	case errMsg:
-		m.err = msg
+		m.err = msg()
 		m.chatNode.Stop()
 		return m, nil
 	}
@@ -175,6 +178,15 @@ func (m model) View() string {
 	)
 }
 
+// Updates the viewport content
+func (m *model) onResize(msg tea.WindowSizeMsg) {
+	m.viewport.Width = msg.Width
+	m.textarea.SetWidth(msg.Width)
+	m.viewport.Height = msg.Height - m.textarea.Height() - lipgloss.Height(gap)
+	m.refreshMessagesView()
+}
+
+// Rerenders the messages in the viewport
 func (m *model) refreshMessagesView() {
 	if len(m.messages) == 0 {
 		return
@@ -189,6 +201,6 @@ func (m *model) refreshMessagesView() {
 }
 
 func Run() (tea.Model, error) {
-	program = tea.NewProgram(initialModel())
+	program = tea.NewProgram(initialNameModel())
 	return program.Run()
 }
