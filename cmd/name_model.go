@@ -1,0 +1,58 @@
+package cmd
+
+import (
+	"fmt"
+
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+type nameModel struct {
+	nameInput textinput.Model
+}
+
+func initialNameModel() nameModel {
+	ti := textinput.New()
+	ti.CharLimit = 20
+	ti.Placeholder = "e.g. Bob the Builder"
+	ti.Focus()
+	return nameModel{nameInput: ti}
+}
+
+func (m nameModel) Init() tea.Cmd {
+	return textinput.Blink
+}
+
+func (m nameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.Type {
+
+		case tea.KeyCtrlC, tea.KeyEsc:
+			return m, tea.Quit
+
+		case tea.KeyEnter:
+			return m.switchToChat()
+		}
+	}
+
+	var cmd tea.Cmd
+	m.nameInput, cmd = m.nameInput.Update(msg)
+	return m, cmd
+}
+
+func (m nameModel) View() string {
+	return fmt.Sprintf("What's your name?\n\n%s\n\n", m.nameInput.View())
+}
+
+// Transitions to the chat view
+// Returns commands to initialize the chat view
+func (m *nameModel) switchToChat() (model, tea.Cmd) {
+	model := initialModel(m.nameInput.Value())
+
+	// When transitioning to the chat view, we want model
+	// to update its view based of the window size
+	cmd := tea.Batch(tea.EnterAltScreen, tea.ClearScreen, model.Init())
+
+	return model, cmd
+}
