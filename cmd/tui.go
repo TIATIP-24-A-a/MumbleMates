@@ -17,8 +17,6 @@ import (
 
 const gap = "\n\n"
 
-var program *tea.Program
-
 type (
 	errMsg func() error
 )
@@ -84,26 +82,29 @@ Type a message and press Enter to send.`)
 	}
 }
 
-func (m model) Init() tea.Cmd {
-	go listenForStreamEvents(m)
-
-	return textarea.Blink
+func waitForEvent(events chan event.Event) tea.Cmd {
+	return func() tea.Msg {
+		return <-events
+	}
 }
 
-func listenForStreamEvents(m model) {
-	for msg := range m.chatNode.Events {
-		program.Send(msg)
-	}
+func (m model) Init() tea.Cmd {
+	return tea.Batch(
+		textarea.Blink,
+		waitForEvent(m.chatNode.Events),
+	)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
-		tiCmd tea.Cmd
-		vpCmd tea.Cmd
+		tiCmd    tea.Cmd
+		vpCmd    tea.Cmd
+		eventCmd tea.Cmd
 	)
 
 	m.textarea, tiCmd = m.textarea.Update(msg)
 	m.viewport, vpCmd = m.viewport.Update(msg)
+	eventCmd = waitForEvent(m.chatNode.Events)
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
@@ -166,7 +167,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
-	return m, tea.Batch(tiCmd, vpCmd)
+	return m, tea.Batch(vpCmd, tiCmd, eventCmd)
 }
 
 func (m model) View() string {
@@ -201,6 +202,5 @@ func (m *model) refreshMessagesView() {
 }
 
 func Run() (tea.Model, error) {
-	program = tea.NewProgram(initialNameModel())
-	return program.Run()
+	return tea.NewProgram(initialNameModel()).Run()
 }
