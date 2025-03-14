@@ -1,4 +1,4 @@
-package chat
+package internal
 
 import mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 

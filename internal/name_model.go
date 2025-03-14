@@ -1,4 +1,4 @@
-package chat
+package internal
 
 import (
 	"fmt"
