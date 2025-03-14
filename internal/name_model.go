@@ -1,4 +1,4 @@
-package cmd
+package chat
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ type nameModel struct {
 	nameInput textinput.Model
 }
 
-func initialNameModel() nameModel {
+func InitialNameModel() nameModel {
 	ti := textinput.New()
 	ti.CharLimit = 20
 	ti.Placeholder = "e.g. Bob the Builder"

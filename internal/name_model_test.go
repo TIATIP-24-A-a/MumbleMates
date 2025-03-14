@@ -1,4 +1,4 @@
-package cmd
+package chat
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 func TestNameModel(t *testing.T) {
 	name := "de_dust2"
 
-	m := initialNameModel()
+	m := InitialNameModel()
 	tm := teatest.NewTestModel(t, m, teatest.WithInitialTermSize(300, 150))
 
 	tm.Type(name)
