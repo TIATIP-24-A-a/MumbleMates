@@ -1,6 +1,6 @@
 module github.com/TIATIP-24-A-a/MumbleMates
 
-go 1.23.5
+go 1.24.0
 
 require (
 	github.com/charmbracelet/lipgloss v1.0.0
