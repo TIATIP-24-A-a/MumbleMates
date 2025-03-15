@@ -27,6 +27,7 @@ type model struct {
 	senderStyle   lipgloss.Style
 	receiverStyle lipgloss.Style
 	eventStyle    lipgloss.Style
+	infoStyle     lipgloss.Style
 
 	name string
 
@@ -75,6 +76,7 @@ Type a message and press Enter to send.`)
 		senderStyle:   lipgloss.NewStyle().Foreground(lipgloss.Color("5")),
 		receiverStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("1")),
 		eventStyle:    lipgloss.NewStyle().Foreground(lipgloss.Color("3")),
+		infoStyle:     lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
 		name:          name,
 		chatNode:      *chatNode,
 		err:           nil,
@@ -139,7 +141,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case event.Event:
 		switch msg.Type {
-		case "message":
+		case event.MessageEventType:
 			messageEvent := msg.Payload.(string)
 
 			formattedTime := m.eventStyle.Render(msg.Timestamp.Format("15:04"))
@@ -153,6 +155,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				time:    msg.Timestamp,
 			})
 
+			m.refreshMessagesView()
+
+		case event.ConnectEventType:
+			message := fmt.Sprintf("[%s] %s has connected", msg.Timestamp.Format("15:04"), msg.PeerInfo.Name)
+			styled := m.eventStyle.Render(message)
+			m.messages = append(m.messages, Message{
+				id:      msg.ID,
+				content: styled,
+				sender:  msg.PeerInfo.Name,
+				time:    msg.Timestamp,
+			})
 			m.refreshMessagesView()
 		}
 

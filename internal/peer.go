@@ -67,6 +67,13 @@ func (c *ChatNode) ConnectToPeer(pi peerstore.AddrInfo) error {
 
 	c.peers[pi.ID] = stream
 
+	// Notify the peer that we have connected
+	connectEvent := event.NewConnection(c.name)
+	err = c.SendEventToPeer(pi.ID, *connectEvent)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -105,6 +112,21 @@ func (c *ChatNode) SendEvent(e event.Event) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (c *ChatNode) SendEventToPeer(id peerstore.ID, e event.Event) error {
+	stream := c.peers[id]
+	if stream == nil {
+		return fmt.Errorf("peer not found")
+	}
+
+	encoder := json.NewEncoder(stream)
+	err := encoder.Encode(e)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
