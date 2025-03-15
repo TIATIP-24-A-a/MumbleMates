@@ -13,6 +13,7 @@ import (
 	network "github.com/libp2p/go-libp2p/core/network"
 	peerstore "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/multiformats/go-multiaddr"
 )
 
 type ChatNode struct {
@@ -80,6 +81,18 @@ func (c *ChatNode) ConnectToPeer(pi peerstore.AddrInfo) error {
 func (c *ChatNode) HandleStream(stream network.Stream) {
 	defer stream.Close()
 	buf := bufio.NewReader(stream)
+
+	remoteId := stream.Conn().RemotePeer()
+	if _, ok := c.peers[remoteId]; !ok {
+		pi := peerstore.AddrInfo{
+			ID:    remoteId,
+			Addrs: []multiaddr.Multiaddr{stream.Conn().RemoteMultiaddr()},
+		}
+		if err := c.ConnectToPeer(pi); err != nil {
+			fmt.Println("error connecting to peer:", err)
+			return
+		}
+	}
 
 	for {
 		responseBytes, err := buf.ReadString(END_BYTE)
