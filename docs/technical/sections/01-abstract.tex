@@ -1,21 +1,20 @@
 \section*{Abstract}
 
-Dieses Dokument beschreibt die Entwicklung einer einfachen und sicheren Peer-to-Peer (P2P) Chat-Anwendung namens MumbleMates, die in Go programmiert wurde. Ziel des Projekts war es, eine benutzerfreundliche und sichere Kommunikationsplattform zu schaffen, die ohne zentrale Server auskommt. Die Anwendung nutzt libp2p für die P2P-Kommunikation und mDNS für die Peer-Erkennung.
+Dieses Dokument beschreibt die Implementierung einer einfachen Peer-to-Peer (P2P) Chat-Anwendung namens MumbleMates, die in Go programmiert wurde. Die Applikation erlaubt eine direkte Kommunikation zwischen Benutzern, ohne dass ein zentraler Server benötigt wird.
+Ziel des Projekts war es, die Kommunikation zwischen Benutzern zu ermöglichen, die ohne zentrale Server auskommt. Die Anwendung nutzt libp2p für die P2P-Kommunikation und mDNS für die Peer-Erkennung.
 
 Die wesentlichen Ziele des Projekts waren:
 \begin{itemize}
-    \item Entwicklung einer einfachen und sicheren P2P-Chat-Anwendung
+    \item Entwicklung einer einfachen Chat-Anwedung
+    \item P2P Kommunikation ohne zentralen Server
     \item Auswahl geeigneter Technologien und Methoden zur Ermöglichung der Kommunikation zwischen Peers
     \item Sicherstellung der Benutzerfreundlichkeit der Anwendung
-    \item Implementierung von Sicherheitsmaßnahmen zur Gewährleistung der Vertraulichkeit der Kommunikation
+    \item Automatische Erkennung von Peers und Verbindungsaufbau mit ihnen
+    \item Bedienung über die Kommandozeile
 \end{itemize}
 
-Unsere Ergebnisse zeigen, dass die Verwendung von Go, libp2p und mDNS eine effektive Lösung für die Entwicklung einer P2P-Chat-Anwendung darstellt. Die Implementierung einer grafischen Benutzeroberfläche mit Fyne hat die Benutzerfreundlichkeit erheblich verbessert. Durch die Integration von End-to-End-Verschlüsselung konnten wir die Vertraulichkeit der Kommunikation sicherstellen.
+Unsere Ergebnisse zeigen, dass die Verwendung von Go, libp2p und mDNS eine effektive Lösung für die Entwicklung einer P2P-Chat-Anwendung darstellt. Die Implementierung einer Benutzeroberfläche mit bubblecharm erlaubt eine einfache Bedienung der Anwendung.
 
-Im Vergleich zu anderen P2P-Chat-Anwendungen, die oft komplexere Protokolle und Technologien verwenden, haben wir uns bewusst für eine einfachere und leicht verständliche Lösung entschieden. Dies ermöglicht es auch weniger erfahrenen Entwicklern, die Anwendung nachzuvollziehen und weiterzuentwickeln. Andere Arbeiten, wie z.B. Signal oder WhatsApp, bieten zwar ähnliche Sicherheitsfunktionen, sind jedoch in ihrer Implementierung weitaus komplexer und weniger transparent.
-
-Die Schlussfolgerungen aus diesem Bericht sind klar: Eine einfache, aber effektive P2P-Chat-Anwendung kann mit den richtigen Werkzeugen und Methoden entwickelt werden. Die iterative Entwicklung und das Einbeziehen von Benutzerfeedback sind entscheidend für den Erfolg einer solchen Anwendung. Die Ergebnisse unserer Arbeit zeigen, dass es möglich ist, eine sichere und benutzerfreundliche P2P-Chat-Anwendung zu entwickeln, die den Anforderungen der Benutzer gerecht wird.
-
-Dieses Abstract bietet einen Überblick über die Ausgangslage, Intentionen, Ziele, Ergebnisse und Schlussfolgerungen des Projekts und ermöglicht es dem Leser, schnell zu erkennen, ob das Dokument für seine Fragestellung relevant ist.
+Im Vergleich zu anderen P2P-Chat-Anwendungen, die oft komplexere Protokolle und Technologien verwenden, haben wir uns bewusst für eine einfachere und leicht verständliche Lösung entschieden. Dies ermöglicht es auch weniger erfahrenen Entwicklern, die Anwendung nachzuvollziehen und weiterzuentwickeln.
 
 \newpage
