@@ -3,6 +3,8 @@ name: 🚦 Go CI
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -41,3 +43,44 @@ jobs:
         uses: dominikh/staticcheck-action@v1.3.1
         with:
           install-go: false
+
+  release:
+    name: 🦖 Artifacts
+    runs-on: ${{ matrix.os }}
+    needs: ci
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-latest]
+      
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🧑‍🍳 Set up Go
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version-file: "./go.mod"
+        
+      - name: 🏗️ Build
+        id: build
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            go build -o ./bin/MumblesMates_${{ matrix.os }}.exe main.go
+            echo "bin_path=./bin/MumblesMates_${{ matrix.os }}.exe" >> "$GITHUB_OUTPUT"
+
+          else
+            go build -o ./bin/MumbleMates_${{ matrix.os }} main.go
+            echo "bin_path=./bin/MumbleMates_${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+          fi
+          
+        
+      - name: 📤 Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: mumblemates-${{ matrix.os }}
+          path: ${{ steps.build.outputs.bin_path }}
+
