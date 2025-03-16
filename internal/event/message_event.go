@@ -8,6 +8,7 @@ type MessagePayload struct {
 	Message string `json:"message"`
 }
 
+// NewMessage creates a new message event
 func NewMessage(name string, message string) *Event {
 	return newEvent(
 		MessageEventType,

@@ -30,6 +30,7 @@ const (
 	PROTOCOL_ID = protocol.ID("/chat/1.0.0")
 )
 
+// Create a new chat node
 func NewChatNode(name string) (*ChatNode, error) {
 	node, err := libp2p.New(libp2p.ListenAddrStrings())
 	if err != nil {
@@ -43,6 +44,7 @@ func NewChatNode(name string) (*ChatNode, error) {
 	}, nil
 }
 
+// Connect to a peer
 func (c *ChatNode) connectToPeer(pi peerstore.AddrInfo) error {
 	if err := c.Node.Connect(context.Background(), pi); err != nil {
 		return err
@@ -66,6 +68,7 @@ func (c *ChatNode) connectToPeer(pi peerstore.AddrInfo) error {
 	return nil
 }
 
+// Handle incoming streams
 func (c *ChatNode) handleStream(stream network.Stream) {
 	defer stream.Close()
 	buf := bufio.NewReader(stream)
@@ -105,6 +108,7 @@ func (c *ChatNode) handleStream(stream network.Stream) {
 	}
 }
 
+// Send an event to all connected peers
 func (c *ChatNode) SendEvent(e event.Event) error {
 	for _, stream := range c.peers {
 		encoder := json.NewEncoder(stream)
@@ -116,6 +120,7 @@ func (c *ChatNode) SendEvent(e event.Event) error {
 	return nil
 }
 
+// Send an event to a specific peer
 func (c *ChatNode) sendEventToPeer(id peerstore.ID, e event.Event) error {
 	stream := c.peers[id]
 	if stream == nil {
@@ -131,6 +136,7 @@ func (c *ChatNode) sendEventToPeer(id peerstore.ID, e event.Event) error {
 	return nil
 }
 
+// Start the chat node
 func (c *ChatNode) Start() error {
 	c.Node.SetStreamHandler(PROTOCOL_ID, c.handleStream)
 
@@ -141,6 +147,7 @@ func (c *ChatNode) Start() error {
 	return nil
 }
 
+// Stop the chat node
 func (c *ChatNode) Stop() error {
 	if err := c.Node.Close(); err != nil {
 		return err
@@ -151,6 +158,7 @@ func (c *ChatNode) Stop() error {
 	return nil
 }
 
+// tea.Model.Init interface implementation
 func (c *ChatNode) HandlePeerFound(pi peerstore.AddrInfo) {
 	isSelf := pi.ID == c.Node.ID()
 	if isSelf {

@@ -20,6 +20,7 @@ type (
 	errMsg func() error
 )
 
+// Main model for the TUI
 type model struct {
 	viewport      viewport.Model
 	messages      []Message
@@ -42,6 +43,7 @@ type Message struct {
 	time    time.Time
 }
 
+// Initial model
 func initialModel(name string) model {
 	ta := textarea.New()
 	ta.Placeholder = "Send a message..."
@@ -83,12 +85,14 @@ Type a message and press Enter to send.`)
 	}
 }
 
+// Waits for an event to be sent as a command
 func waitForEvent(events chan event.Event) tea.Cmd {
 	return func() tea.Msg {
 		return <-events
 	}
 }
 
+// tea.Model.Init interface implementation
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		textarea.Blink,
@@ -96,6 +100,7 @@ func (m model) Init() tea.Cmd {
 	)
 }
 
+// tea.Model.Update interface implementation
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
 		tiCmd    tea.Cmd
@@ -182,6 +187,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(vpCmd, tiCmd, eventCmd)
 }
 
+// tea.Model.View interface implementation
 func (m model) View() string {
 	return fmt.Sprintf(
 		"%s%s%s",

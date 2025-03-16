@@ -7,10 +7,12 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+// Model for the name input view
 type nameModel struct {
 	nameInput textinput.Model
 }
 
+// InitialNameModel initializes the name input view
 func InitialNameModel() nameModel {
 	ti := textinput.New()
 	ti.CharLimit = 20
@@ -19,10 +21,12 @@ func InitialNameModel() nameModel {
 	return nameModel{nameInput: ti}
 }
 
+// tea.Model.Init interface implementation
 func (m nameModel) Init() tea.Cmd {
 	return textinput.Blink
 }
 
+// tea.Model.Update interface implementation
 func (m nameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -41,6 +45,7 @@ func (m nameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+// tea.Model.View interface implementation
 func (m nameModel) View() string {
 	return fmt.Sprintf("What's your name?\n\n%s\n\n", m.nameInput.View())
 }
