@@ -1,7 +1,7 @@
 \section{Systemarchitektur}
 
 \subsection{Dezentrale Architektur}
-Der P2P-Chat basiert auf einer dezentralen Architektur, bei der jeder Knotenpunkt im Netzwerk als Peer agiert. Im Gegensatz zu zentralen Servern gibt es bei diesem System keine zentrale Instanz, die die Kommunikation verwaltet. Jeder Peer ist direkt mit anderen Peers verbunden, was für erhöhte Sicherheit und Datenschutz sorgt.
+Der P2P-Chat basiert auf einer dezentralen Architektur, bei der jeder Knotenpunkt im Netzwerk als Peer agiert. Im Gegensatz zu zentralen Servern gibt es bei diesem System keine zentrale Instanz, die die Kommunikation verwaltet. Jeder Peer ist direkt mit anderen Peers verbunden, was für erhöhte Sicherheit und Datenschutz sorgt. \cite{peer_to_peer}
 
 \subsection{Kommunikation zwischen Peers}
 Die Kommunikation zwischen Peers erfolgt direkt über TCP/IP-Sockets. Jeder Peer hat eine einzigartige IP-Adresse und Portnummer, über die er Verbindungen zu anderen Peers herstellen kann.
@@ -10,7 +10,7 @@ Die Kommunikation zwischen Peers erfolgt direkt über TCP/IP-Sockets. Jeder Peer
 
 \subsection{Go als Programmiersprache}
 
-Go (oder Golang) wurde gewählt, da es für die Entwicklung von Netzwerksoftware besonders gut geeignet ist. Es bietet einfache Unterstützung für parallele Verarbeitung (Concurrency) durch Goroutinen und Kanäle, was bei der Entwicklung eines Echtzeit-Chat-Systems von großem Vorteil ist.
+Go (oder Golang) wurde gewählt, da es für die Entwicklung von Netzwerksoftware besonders gut geeignet ist. Es bietet einfache Unterstützung für parallele Verarbeitung (Concurrency) durch Goroutinen und Kanäle, was bei der Entwicklung eines Echtzeit-Chat-Systems von großem Vorteil ist. \cite{go_docs}
 
 \subsection {Go-Tools und Libraries}
 
@@ -18,7 +18,7 @@ Für die Implementierung des P2P-Chats in Go wurden folgende Werkzeuge und Bibli
 
 \begin{itemize}
     \item net: Zum Erstellen und Verwenden von TCP- und UDP-Verbindungen.
-    \item libp2p: Eine Library für die Entwicklung von dezentralen Anwendungen, die auf dem Peer-to-Peer-Prinzip basieren.
+    \item libp2p: Eine Library für die Entwicklung von dezentralen Anwendungen, die auf dem Peer-to-Peer-Prinzip basieren. \cite{libp2p_go_getting_started}
 \end{itemize}
 
 \subsection{Architektur der Implementierung}
@@ -37,11 +37,11 @@ Die Architektur des Go-Programms basiert auf einem client-serverähnlichen Model
 
 \subsection{Peer-Discovery}
 
-Für die Peer-Discovery wird ein Bootstrap-Server verwendet. Zu Beginn verbindet sich jeder Peer mit dem Bootstrap-Server, um eine Liste anderer Peers zu erhalten. Dies ermöglicht es, neue Peers im Netzwerk zu finden. Sobald ein Peer die IP-Adressen anderer Peers kennt, kann er eine direkte Verbindung zu diesen herstellen.
+Für die Peer-Discovery wird ein mDNS (Multicast DNS) verwendet, um Peers im lokalen Netzwerk zu entdecken. Jeder Peer sendet periodisch mDNS-Anfragen, um andere Peers zu finden und sich mit ihnen zu verbinden. \cite{mdns}
 
 \subsection{Peer-Verwaltung}
 
-Das Netzwerk von Peers ist dynamisch. 
+Das Netzwerk von Peers ist dynamisch.
 Ein Peer kann jederzeit das Netzwerk betreten oder verlassen. Beim Verlassen eines Peers wird der verbleibenden Peers die neue Konfiguration (Liste der aktiven Peers) übermittelt, sodass das Netzwerk stets aktuell bleibt.
 
 \section{Fehlerbehandlung und Robustheit}
@@ -53,5 +53,31 @@ Wenn eine Verbindung zu einem Peer unterbrochen wird, versucht der Peer automati
 \subsection{Lastverteilung}
 
 Da es keine zentrale Instanz gibt, die alle Verbindungen verwaltet, wird die Last gleichmäßig auf alle Peers im Netzwerk verteilt. Jeder Peer ist für die Verwaltung seiner eigenen Verbindungen verantwortlich, wodurch die Skalierbarkeit des Systems erhöht wird.
+
+
+
+\section{Testing}
+
+\subsection{Unit-Tests}
+
+Es wurden Unit-Tests für die wichtigsten Funktionen des Programms geschrieben, um sicherzustellen, dass sie korrekt funktionieren und keine Fehler enthalten.
+Das TUI wurde mit Hilfe von teatest Package getestet. \cite{teatest_docs}
+
+Die Unit-Tests sind im Quellcode zu finden.
+
+
+\subsection{Manuelle Tests}
+
+Es wurden auch manuelle Tests durchgeführt, um sicherzustellen, dass das Programm wie erwartet funktioniert und die Anforderungen erfüllt.
+
+\section{Qualitätssicherung}
+
+\subsection{Code-Qualität}
+
+Der Code wurde nach den Best Practices von Go entwickelt, um eine hohe Qualität und Lesbarkeit zu gewährleisten. Dazu gehören die Verwendung von Go-Formatierungswerkzeugen, die Einhaltung von Namenskonventionen und die Dokumentation des Codes.
+
+\subsection{Continuous Integration}
+
+Mii Hilfe von Continuous Integration (CI) wird sichergestellt, dass der Code bei jeder Änderung automatisch getestet wird. Dadurch wird die Qualität des Codes verbessert und die Wahrscheinlichkeit von Fehlern reduziert. \cite{github_actions_docs}
 
 \newpage
