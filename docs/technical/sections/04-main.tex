@@ -1,58 +1,57 @@
-\section{Hauptteil}
+\section{Systemarchitektur}
 
-In diesem Abschnitt wird beschrieben, wie die formulierten Ziele erreicht wurden. 
-Es wird beschrieben, welche Werkzeuge, Bauteile und Methoden eingesetzt wurden, um die Ziele zu erreichen und welche grundlegenden Probleme zu überwinden waren. 
-Jede Person, die den Bericht liest, sollte dadurch in der Lage sein, die ausgeführten Arbeiten zu wiederholen und die Ergebnisse zu reproduzieren.
+\subsection{Dezentrale Architektur}
+Der P2P-Chat basiert auf einer dezentralen Architektur, bei der jeder Knotenpunkt im Netzwerk als Peer agiert. Im Gegensatz zu zentralen Servern gibt es bei diesem System keine zentrale Instanz, die die Kommunikation verwaltet. Jeder Peer ist direkt mit anderen Peers verbunden, was für erhöhte Sicherheit und Datenschutz sorgt.
 
-\subsection{Iteration 1: Grundlegende Architektur und Kommunikation}
+\subsection{Kommunikation zwischen Peers}
+Die Kommunikation zwischen Peers erfolgt direkt über TCP/IP-Sockets. Jeder Peer hat eine einzigartige IP-Adresse und Portnummer, über die er Verbindungen zu anderen Peers herstellen kann.
 
-\subsubsection{Problemstellung}
-Die erste Herausforderung bestand darin, eine grundlegende Peer-to-Peer (P2P) Kommunikationsarchitektur zu entwickeln, die es den Benutzern ermöglicht, Nachrichten direkt miteinander auszutauschen, ohne einen zentralen Server zu verwenden.
+\section{Go Implementierung}
 
-\subsubsection{Werkzeuge und Methoden}
-Für die Implementierung der P2P-Kommunikation haben wir die folgenden Werkzeuge und Technologien verwendet:
+\subsection{Go als Programmiersprache}
+
+Go (oder Golang) wurde gewählt, da es für die Entwicklung von Netzwerksoftware besonders gut geeignet ist. Es bietet einfache Unterstützung für parallele Verarbeitung (Concurrency) durch Goroutinen und Kanäle, was bei der Entwicklung eines Echtzeit-Chat-Systems von großem Vorteil ist.
+
+\subsection {Go-Tools und Libraries}
+
+Für die Implementierung des P2P-Chats in Go wurden folgende Werkzeuge und Bibliotheken verwendet:
+
 \begin{itemize}
-    \item \textbf{Programmiersprache:} Go
-    \item \textbf{Bibliotheken:} libp2p, mDNS
-    \item \textbf{Entwicklungsumgebung:} Visual Studio Code
+    \item net: Zum Erstellen und Verwenden von TCP- und UDP-Verbindungen.
+    \item libp2p: Eine Library für die Entwicklung von dezentralen Anwendungen, die auf dem Peer-to-Peer-Prinzip basieren.
 \end{itemize}
 
-\subsubsection{Ergebnisse}
-Wir haben eine einfache P2P-Kommunikationsarchitektur entwickelt, bei der jeder Benutzer als Peer fungiert. Die Kommunikation erfolgt über libp2p und mDNS für die Peer-Erkennung. Die grundlegende Funktionalität wurde erfolgreich implementiert und getestet.
+\subsection{Architektur der Implementierung}
 
-\subsection{Iteration 2: Benutzeroberfläche und Benutzerfreundlichkeit}
+Die Architektur des Go-Programms basiert auf einem client-serverähnlichen Modell, wobei jedoch jeder Peer sowohl Server als auch Client ist. Das System ist so aufgebaut, dass jeder Peer beim Starten seine eigene ID (z.B. IP-Adresse) generiert und mit anderen Peers kommuniziert.
 
-\subsubsection{Problemstellung}
-Die nächste Herausforderung bestand darin, eine benutzerfreundliche Oberfläche zu entwickeln, die es den Benutzern ermöglicht, einfach und intuitiv Nachrichten zu senden und zu empfangen.
-
-\subsubsection{Werkzeuge und Methoden}
-Für die Entwicklung der Benutzeroberfläche haben wir die folgenden Werkzeuge und Technologien verwendet:
 \begin{itemize}
-    \item \textbf{Programmiersprache:} Go
-    \item \textbf{Bibliotheken:} Fyne (für GUI-Entwicklung)
-    \item \textbf{Design-Tools:} Figma für die Erstellung von Mockups
+    \item Server-Komponente: Jeder Peer hört auf einem bestimmten Port und akzeptiert eingehende Verbindungen von anderen Peers.
+    \item Client-Komponente: Jeder Peer kann über Anfragen an andere Peers senden, um Nachrichten zu übermitteln.
 \end{itemize}
 
-\subsubsection{Ergebnisse}
-Wir haben eine grafische Benutzeroberfläche (GUI) entwickelt, die es den Benutzern ermöglicht, Nachrichten zu senden und zu empfangen. Die GUI wurde basierend auf Benutzerfeedback iterativ verbessert, um die Benutzerfreundlichkeit zu erhöhen.
 
-\subsection{Iteration 3: Sicherheit und Datenschutz}
+\subsection{Nachrichteunübertragung}
 
-\subsubsection{Problemstellung}
-Die letzte Herausforderung bestand darin, die Sicherheit und den Datenschutz der Kommunikation zu gewährleisten, um sicherzustellen, dass Nachrichten nicht von unbefugten Dritten abgefangen oder gelesen werden können.
+\section{Peer-Discovery und -Verwaltung}
 
-\subsubsection{Werkzeuge und Methoden}
-Für die Implementierung der Sicherheitsmaßnahmen haben wir die folgenden Werkzeuge und Technologien verwendet:
-\begin{itemize}
-    \item \textbf{Programmiersprache:} Go
-    \item \textbf{Bibliotheken:} libp2p-crypto
-    \item \textbf{Methoden:} End-to-End-Verschlüsselung (E2EE)
-\end{itemize}
+\subsection{Peer-Discovery}
 
-\subsubsection{Ergebnisse}
-Wir haben eine End-to-End-Verschlüsselung implementiert, die sicherstellt, dass Nachrichten nur von den beabsichtigten Empfängern gelesen werden können. Die Verschlüsselung wurde erfolgreich getestet und gewährleistet die Vertraulichkeit der Kommunikation.
+Für die Peer-Discovery wird ein Bootstrap-Server verwendet. Zu Beginn verbindet sich jeder Peer mit dem Bootstrap-Server, um eine Liste anderer Peers zu erhalten. Dies ermöglicht es, neue Peers im Netzwerk zu finden. Sobald ein Peer die IP-Adressen anderer Peers kennt, kann er eine direkte Verbindung zu diesen herstellen.
 
-\subsection{Zusammenfassung}
-Durch die iterative Entwicklung und den Einsatz geeigneter Werkzeuge und Methoden konnten wir die formulierten Ziele erreichen. Die entwickelte P2P-Chat-Anwendung ermöglicht eine sichere und benutzerfreundliche Kommunikation zwischen den Benutzern. Die beschriebenen Schritte und verwendeten Technologien ermöglichen es anderen, die ausgeführten Arbeiten zu wiederholen und die Ergebnisse zu reproduzieren.
+\subsection{Peer-Verwaltung}
+
+Das Netzwerk von Peers ist dynamisch. 
+Ein Peer kann jederzeit das Netzwerk betreten oder verlassen. Beim Verlassen eines Peers wird der verbleibenden Peers die neue Konfiguration (Liste der aktiven Peers) übermittelt, sodass das Netzwerk stets aktuell bleibt.
+
+\section{Fehlerbehandlung und Robustheit}
+
+Wenn eine Verbindung zu einem Peer unterbrochen wird, versucht der Peer automatisch, die Verbindung nach einer festgelegten Zeitspanne erneut aufzubauen. Dieser Prozess hilft dabei, die Stabilität des Netzwerks zu gewährleisten.
+
+\section{Performance und Skalierbarkeit}
+
+\subsection{Lastverteilung}
+
+Da es keine zentrale Instanz gibt, die alle Verbindungen verwaltet, wird die Last gleichmäßig auf alle Peers im Netzwerk verteilt. Jeder Peer ist für die Verwaltung seiner eigenen Verbindungen verantwortlich, wodurch die Skalierbarkeit des Systems erhöht wird.
 
 \newpage
