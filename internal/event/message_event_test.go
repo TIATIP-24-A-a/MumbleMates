@@ -15,5 +15,5 @@ func TestNewMessage(t *testing.T) {
 	assert.NotNil(t, messageEvent)
 	assert.NotNil(t, messageEvent.ID)
 	assert.Equal(t, message, messageEvent.Payload)
-	assert.Equal(t, "message", messageEvent.Type)
+	assert.Equal(t, MessageEventType, messageEvent.Type)
 }
