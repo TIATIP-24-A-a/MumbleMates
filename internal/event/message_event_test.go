@@ -2,6 +2,8 @@ package event
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewMessage(t *testing.T) {
@@ -10,15 +12,8 @@ func TestNewMessage(t *testing.T) {
 
 	messageEvent := NewMessage(name, message)
 
-	if messageEvent.ID.String() == "" {
-		t.Errorf("Expected ID to be set, got empty string")
-	}
-
-	if messageEvent.Type != "message" {
-		t.Errorf("Expected type to be 'message', got %s", messageEvent.Type)
-	}
-
-	if messageEvent.Payload != message {
-		t.Errorf("Expected message to be %s, got %s", message, messageEvent.Payload)
-	}
+	assert.NotNil(t, messageEvent)
+	assert.NotNil(t, messageEvent.ID)
+	assert.Equal(t, message, messageEvent.Payload)
+	assert.Equal(t, "message", messageEvent.Type)
 }
