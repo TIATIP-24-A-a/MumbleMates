@@ -1,0 +1,80 @@
+\section{Entwicklungsumgebung}
+
+Dieser Abschnitt beschreibt die notwendingen Werkzeuge und Technologien, die zum Entwickeln dieser Anwendung eingesetzt wurden.
+Dies dient zum reproduzieren der Ergebnisse. 
+
+
+\subsection{Programmiersprache}
+
+Die Software wird in der Programmiersprache Go geschrieben.
+Die verwendete Version kann vom GitHub-Repository in der Datei \texttt{go.mod} eingesehen werden.
+
+
+\subsection{Software}
+
+
+\subsubsection{IDE und Tools}
+
+\begin{itemize}
+    \item \textbf{Visual Studio Code:} Visual Studio Code ist ein quelloffener Quellcode-Editor von Microsoft. Da es verschiedene Platformen unterstützt und viele Erweiterungen (Extensions) anbietet, ist es ein beliebtes Tool für Entwickler.
+    \item \textbf{Git:} Git ist ein Versionskontrollsystem, das die Zusammenarbeit erleichtert. Es ermöglicht die Verfolgung von Änderungen im Quellcode.
+    \item \textbf{GitHub:} GitHub ist eine Online-Platform für die Versionsverwaltung von Quellcode. Es bietet Funktionen wie Pull-Requests, Issues und Workflow Actions.
+\end{itemize}
+
+Visual Studio Code ist emppfohlen, da der Quellcode die passenden Konfigurationen enthält.
+
+
+\subsubsection{Libraries und Frameworks}
+
+\begin{itemize}
+    \item \textbf{bubbletea:} bubblecharm ist ein TUI-Framework, das auf Go basiert. \cite{bubbletea}
+    \item \textbf{bubbles:} bubbles ist eine Bibliothek für bubblecharm, die TUI-Komponenten bereitstellt. \cite{bubbles}
+    \item \textbf{teatest:} teatest ist ein Test-Framework für bubblecharm-Anwendungen. \cite{teatest_docs}
+    \item \textbf{Libp2p:} Libp2p ist ein P2P-Netzwerk-Protokoll. Es bietet eine einfache und flexiblen Schnittstelle zum Erstellen von Peer-to-Peer-Netzwerken. \cite{libp2p_go_getting_started}
+\end{itemize}
+
+Die Version der verwendeten Libraries und Frameworks kann in der Datei \texttt{go.mod} im GitHub-Repository eingesehen werden.
+
+
+\subsection{Installation und Einrichtung}
+
+Um die Anwendung zu installieren und auszuführen, müssen die folgenden Schritte ausgeführt werden:
+
+\begin{enumerate}
+    \item Installiere Go:
+    \begin{itemize}
+        \item Die Version von Go kann auf https://golang.org/ heruntergeladen werden.
+        \item Befolge die Anweisungen auf der Website, um Go auf deinem System zu installieren.
+        \item Überprüfe die Installation, indem du den Befehl \texttt{go version} in der Kommandozeile ausführst.
+    \end{itemize}
+
+    \item Installiere Git:
+    \begin{itemize}
+        \item Die Version von Git kann auf https://git-scm.com/ heruntergeladen werden.
+        \item Befolge die Anweisungen auf der Website, um Git auf deinem System zu installieren.
+        \item Überprüfe die Installation, indem du den Befehl \texttt{git --version} in der Kommandozeile ausführst.
+    \end{itemize}
+
+    \item Installiere Visual Studio Code:
+    \begin{itemize}
+        \item Die Version von Git kann auf https://git-scm.com/ heruntergeladen werden.
+        \item Befolge die Anweisungen auf der Website, um Git auf deinem System zu installieren.
+        \item Überprüfe die Installation, indem du den Befehl \texttt{git --version} in der Kommandozeile ausführst.
+    \end{itemize}
+
+    \item Clone das GitHub-Repository:
+    \begin{itemize}
+        \item Öffne die Kommandozeile und klone das Repository:
+        
+        \texttt{git clone https://github.com/TIATIP-24-A-a/MumbleMates.git}.
+    \end{itemize}
+    
+    \item Ausführen der Anwendung:
+    \begin{itemize}
+        \item Wechsle in das Verzeichnis des geklonten Repositorys und führe den Befehl \texttt{go run .} aus.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
