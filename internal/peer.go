@@ -43,19 +43,7 @@ func NewChatNode(name string) (*ChatNode, error) {
 	}, nil
 }
 
-func (c *ChatNode) GetAddress() (string, error) {
-	peerInfo := peerstore.AddrInfo{
-		ID:    c.Node.ID(),
-		Addrs: c.Node.Addrs(),
-	}
-	addrs, err := peerstore.AddrInfoToP2pAddrs(&peerInfo)
-	if err != nil {
-		return "", err
-	}
-	return addrs[0].String(), nil
-}
-
-func (c *ChatNode) ConnectToPeer(pi peerstore.AddrInfo) error {
+func (c *ChatNode) connectToPeer(pi peerstore.AddrInfo) error {
 	if err := c.Node.Connect(context.Background(), pi); err != nil {
 		return err
 	}
@@ -70,7 +58,7 @@ func (c *ChatNode) ConnectToPeer(pi peerstore.AddrInfo) error {
 
 	// Notify the peer that we have connected
 	connectEvent := event.NewConnection(c.name)
-	err = c.SendEventToPeer(pi.ID, *connectEvent)
+	err = c.sendEventToPeer(pi.ID, *connectEvent)
 	if err != nil {
 		return err
 	}
@@ -78,7 +66,7 @@ func (c *ChatNode) ConnectToPeer(pi peerstore.AddrInfo) error {
 	return nil
 }
 
-func (c *ChatNode) HandleStream(stream network.Stream) {
+func (c *ChatNode) handleStream(stream network.Stream) {
 	defer stream.Close()
 	buf := bufio.NewReader(stream)
 
@@ -88,7 +76,7 @@ func (c *ChatNode) HandleStream(stream network.Stream) {
 			ID:    remoteId,
 			Addrs: []multiaddr.Multiaddr{stream.Conn().RemoteMultiaddr()},
 		}
-		if err := c.ConnectToPeer(pi); err != nil {
+		if err := c.connectToPeer(pi); err != nil {
 			fmt.Println("error connecting to peer:", err)
 			return
 		}
@@ -128,7 +116,7 @@ func (c *ChatNode) SendEvent(e event.Event) error {
 	return nil
 }
 
-func (c *ChatNode) SendEventToPeer(id peerstore.ID, e event.Event) error {
+func (c *ChatNode) sendEventToPeer(id peerstore.ID, e event.Event) error {
 	stream := c.peers[id]
 	if stream == nil {
 		return fmt.Errorf("peer not found")
@@ -144,7 +132,7 @@ func (c *ChatNode) SendEventToPeer(id peerstore.ID, e event.Event) error {
 }
 
 func (c *ChatNode) Start() error {
-	c.Node.SetStreamHandler(PROTOCOL_ID, c.HandleStream)
+	c.Node.SetStreamHandler(PROTOCOL_ID, c.handleStream)
 
 	if err := setupMDNSDiscovery(c); err != nil {
 		return err
@@ -174,7 +162,7 @@ func (c *ChatNode) HandlePeerFound(pi peerstore.AddrInfo) {
 		return
 	}
 
-	if err := c.ConnectToPeer(pi); err != nil {
+	if err := c.connectToPeer(pi); err != nil {
 		fmt.Println("error connecting to peer:", err)
 	}
 }

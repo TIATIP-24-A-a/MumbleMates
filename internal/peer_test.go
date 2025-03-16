@@ -2,6 +2,8 @@ package internal
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateNode(t *testing.T) {
@@ -11,9 +13,6 @@ func TestCreateNode(t *testing.T) {
 		t.Errorf("Error creating node: %s", err)
 	}
 
-	if node == nil {
-		t.Errorf("Node shoud not be nil")
-	} else if node.name != "test" {
-		t.Errorf("Node name should be 'test', got %s", node.name)
-	}
+	assert.NotNil(t, node)
+	assert.Equal(t, "test", node.name)
 }
