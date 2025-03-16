@@ -3,8 +3,10 @@ name: 🚦 Go CI
 on:
   push:
     branches: [main]
+    paths: ["**.go", "**.mod", "**.sum"]
   pull_request:
     branches: [main]
+    paths: ["**.go", "**.mod", "**.sum"]
 
 permissions:
   contents: read
