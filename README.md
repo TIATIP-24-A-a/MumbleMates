@@ -25,7 +25,10 @@ The latest version is also available under the latest Github Action: [📄 Techn
         ```
         brew install tectonic
         ```
-2. Run the following command:
+2. Install tex-fmt
+    tex-fmt is used for formatting tex files. For the installation guide, see here: https://github.com/WGUNDERWOOD/tex-fmt
+    
+3. Run the following command:
     ```
     tectonic ./docs/technical/main.tex
     ```
