@@ -23,15 +23,46 @@ Für die Implementierung des P2P-Chats in Go wurden folgende Werkzeuge und Bibli
 
 \subsection{Architektur der Implementierung}
 
-Die Architektur des Go-Programms basiert auf einem client-serverähnlichen Modell, wobei jedoch jeder Peer sowohl Server als auch Client ist. Das System ist so aufgebaut, dass jeder Peer beim Starten seine eigene ID (z.B. IP-Adresse) generiert und mit anderen Peers kommuniziert.
+Das System ist so aufgebaut, dass jeder Peer beim Starten seine eigene ID (z.B. IP-Adresse) generiert und mit anderen Peers kommuniziert.
 
 \begin{itemize}
-    \item Server-Komponente: Jeder Peer hört auf einem bestimmten Port und akzeptiert eingehende Verbindungen von anderen Peers.
-    \item Client-Komponente: Jeder Peer kann über Anfragen an andere Peers senden, um Nachrichten zu übermitteln.
+    \item Jeder Peer hört auf einem bestimmten Port und akzeptiert eingehende Verbindungen von anderen Peers.
+    \item Jeder Peer kann über Anfragen an andere Peers senden, um Nachrichten zu übermitteln.
 \end{itemize}
 
+\section{LaTeX Dokumentation}
 
-\subsection{Nachrichteunübertragung}
+Die gesamte Dokumentation wurde mit LaTeX erstellt und ist mit Git versioniert.
+
+\subsection{LaTeX Compiler: tectonic}
+
+Es wurde verschiedenste LaTeX-Compiler getestet, um die Dokumentation zu erstellen. Jedoch entsprachen die meisten nicht den unseren Vorstellungen und Anforderungen, da sie entweder zu kompliziert in der Installation waren oder schlichtweg nicht funktionierten.
+\newline
+
+
+Der LaTeX-Compiler tectonic wurde gewählt, da er eine einfache Installation und Verwendung bietet.
+\newline
+
+Im Gegensatz zu anderen LaTeX-Compilern, handelt es sich bei tectonic um ein simples Single-Binary-Programm. Das bedeutet, dass es keine Abhängigkeiten installiert werden müssen. Dank der simplen Verwendung, kann die Erstellung der Dokumentation im Github Actions Workflow automatisiert werden.
+\newline
+\newline
+
+\begin{figure}[h]
+\caption{tectonic - Github Actions Workflow - Zusammenfassung}
+\centering
+\includegraphics[width=0.5\textwidth]{technical-docs-action.png}
+\end{figure}
+
+
+
+Bei einigen LaTeX-Compilern müssel alle Pakete manuell installiert werden, was teilweise sehr lange dauert. tectonic installiert diese Pakete automatisch, wenn sie benötigt werden.
+
+
+
+
+\
+
+
 
 \section{Peer-Discovery und -Verwaltung}
 
