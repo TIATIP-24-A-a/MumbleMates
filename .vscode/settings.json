@@ -16,5 +16,6 @@
     "gopls": { 
         "ui.semanticTokens": true, 
         "ui.diagnostic.staticcheck": true 
-    }
+    },
+    "latex-workshop.formatting.latex": "tex-fmt"
 }
