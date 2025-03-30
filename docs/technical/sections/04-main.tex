@@ -30,6 +30,19 @@ Das System ist so aufgebaut, dass jeder Peer beim Starten seine eigene ID (z.B. 
     \item Jeder Peer kann über Anfragen an andere Peers senden, um Nachrichten zu übermitteln.
 \end{itemize}
 
+
+\subsection{Windows-Applikation}
+
+Die Applikation wird bei jeder Code Änderung automatisch erstellt und getestet. Dies geschieht mit Hilfe von Github Actions. \cite{github_actions_docs}
+Das Binary kann danach von der Github-Seite heruntergeladen werden.
+
+\begin{figure}[h]
+    \caption{Github Actions Workflow - CI Zusammenfassung}
+    \centering
+    \includegraphics[width=0.5\textwidth]{ci-artifacts.png}
+    \end{figure}
+    
+
 \section{LaTeX Dokumentation}
 
 Die gesamte Dokumentation wurde mit LaTeX erstellt und ist mit Git versioniert.
