@@ -37,11 +37,12 @@ Die Applikation wird bei jeder Code Änderung automatisch erstellt und getestet.
 Das Binary kann danach von der Github-Seite heruntergeladen werden.
 
 \begin{figure}[h]
-    \caption{Github Actions Workflow - CI Zusammenfassung}
+    \caption{MumbleMates im Terminal}
     \centering
-    \includegraphics[width=0.5\textwidth]{ci-artifacts.png}
-    \end{figure}
-    
+    \includegraphics[width=\textwidth]{chat-tui.png}
+\end{figure}
+
+
 
 \section{LaTeX Dokumentation}
 
@@ -58,18 +59,9 @@ Der LaTeX-Compiler tectonic wurde gewählt, da er eine einfache Installation und
 
 Im Gegensatz zu anderen LaTeX-Compilern, handelt es sich bei tectonic um ein simples Single-Binary-Programm. Das bedeutet, dass es keine Abhängigkeiten installiert werden müssen. Dank der simplen Verwendung, kann die Erstellung der Dokumentation im Github Actions Workflow automatisiert werden.
 \newline
-\newline
-
-\begin{figure}[h]
-\caption{tectonic - Github Actions Workflow - Zusammenfassung}
-\centering
-\includegraphics[width=0.5\textwidth]{technical-docs-action.png}
-\end{figure}
-
-
 
 Bei einigen LaTeX-Compilern müssen alle Pakete manuell installiert werden, was teilweise sehr lange dauert. tectonic installiert diese Pakete automatisch, wenn sie benötigt werden.
-\
+
 
 
 \section{Peer-Discovery und -Verwaltung}
@@ -93,6 +85,31 @@ Wenn eine Verbindung zu einem Peer unterbrochen wird, versucht der Peer automati
 
 Da es keine zentrale Instanz gibt, die alle Verbindungen verwaltet, wird die Last gleichmäßig auf alle Peers im Netzwerk verteilt. Jeder Peer ist für die Verwaltung seiner eigenen Verbindungen verantwortlich, wodurch die Skalierbarkeit des Systems erhöht wird.
 
+
+\section{GitHub Workflow}
+Mittels GitHub Workflow wird die Applikation und die Dokumentation automatisch erstellt. Bei jedem Push auf den Main-Branch werden die beiden Workflows ausgeführt. 
+\newline
+
+Wir unterscheiden zwischen zwei Workflows:
+\begin{itemize}
+    \item \textbf{CI-Workflow}: Dieser Workflow versucht die Applikation zu komplieren und führt die Tests aus. Sind die vorherigen Schritte erfolgreich, wird die Applikation als Artifact bereitgestellt.
+    Bei einem Fehler wird der Workflow abgebrochen und der Fehler wird in der GitHub-Oberfläche angezeigt.
+    \item \textbf{Technical-Docs-Workflow}: Dieser Workflow erstellt die Dokumentation und stellt es als Artifact bereit.
+\end{itemize}
+
+
+\begin{figure}[h]
+    \caption{Github Actions Workflow - CI Zusammenfassung}
+    \centering
+    \includegraphics[width=0.5\textwidth]{ci-artifacts.png}
+\end{figure}
+
+\begin{figure}[h]
+    \caption{tectonic - Github Actions Workflow - Zusammenfassung}
+    \centering
+    \includegraphics[width=0.5\textwidth]{technical-docs-action.png}
+\end{figure}
+    
 
 
 \section{Testing}
