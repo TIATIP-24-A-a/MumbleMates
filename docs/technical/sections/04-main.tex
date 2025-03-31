@@ -80,13 +80,13 @@ Wir unterscheiden zwischen zwei Workflows:
 \begin{figure}[h]
     \caption{Github Actions Workflow - CI Zusammenfassung}
     \centering
-    \includegraphics[width=0.5\textwidth]{ci-artifacts.png}
+    \includegraphics[width=\textwidth]{ci-artifacts.png}
 \end{figure}
 
 \begin{figure}[h]
     \caption{tectonic - Github Actions Workflow - Zusammenfassung}
     \centering
-    \includegraphics[width=0.5\textwidth]{technical-docs-action.png}
+    \includegraphics[width=\textwidth]{technical-docs-action.png}
 \end{figure}
     
 
@@ -106,6 +106,45 @@ Die Unit-Tests sind im Quellcode zu finden.
 \subsection{Manuelle Tests}
 
 Es wurden auch manuelle Tests durchgeführt, um sicherzustellen, dass das Programm wie erwartet funktioniert und die Anforderungen erfüllt.
+
+\subsubsection{Voraussetzungen}
+
+Die Applikation wurde auf Windows 10 und 11 getestet und ist nur auf das lokale Netzwerk beschränkt.
+
+
+\subsubsection{Tesfall 1: Namenseingabe}
+Die Applikation fragt beim Starten nach einem Namen. Dieser Name wird dann in der Konsole angezeigt.
+
+\noindent\textbf{Schritte:}
+\begin{enumerate}
+    \item Die Applikation starten.
+    \item Einen Namen mit maxmimal 20 Zeichen eingeben.
+\end{enumerate}
+
+\noindent\textbf{Erwartetes Ergebnis:} Der Name wird Abgefragt und nach Eingabe korrekt dargestellt.
+
+\subsubsection{Testfall 2: Automatische Verbindung}
+Die Applikation versucht automatisch, sich mit anderen Peers zu verbinden. Wenn ein Peer gefunden wird, wird eine Verbindung hergestellt und eine Verbindungsmeldung angezeigt.
+
+\noindent\textbf{Schritte:}
+\begin{enumerate}
+    \item Die Schritte von Testfall 1 wiederholen.
+    \item Die Applikation nochmals starten, wie im Testfall 1.
+    \item Warten bis die Applikation eine Verbindung zu einem anderen Peer herstellt.
+\end{enumerate}
+
+\noindent\textbf{Erwartetes Ergebnis:} Die Verbindung wird automatisch hergestellt und eine Verbindungsmeldung angezeigt.
+
+\subsubsection{Testfall 3: Nachricht senden}
+Die Applikation sendet eine Nachricht an alle verbundenen Peers.
+
+\noindent\textbf{Schritte:}
+\begin{enumerate}
+    \item Die Schritte von Testfall 2 wiederholen.
+    \item Eione Nachricht eingeben und senden (Enter).
+\end{enumerate}
+
+\noindent\textbf{Erwartetes Ergebnis:} Die Nachricht wird an die verbundenen Peers gesendet und in der Konsole angezeigt.
 
 
 
