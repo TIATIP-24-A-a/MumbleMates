@@ -36,31 +36,57 @@ Das System ist so aufgebaut, dass jeder Peer beim Starten seine eigene ID (z.B. 
 Die Applikation wird bei jeder Code Änderung automatisch erstellt und getestet. Dies geschieht mit Hilfe von Github Actions. \cite{github_actions_docs}
 Das Binary kann danach von der Github-Seite heruntergeladen werden.
 
+
+
+\section{MumbleMates - P2P-Chat}
+
+
+
+\subsection{Namenseingabe}
+Beim Starten der Applikation wird ein Name abgefragt. Dieser Name wird bei der Kommunikation mit anderen Peers verwendet.
+
+\begin{figure}[h]
+    \caption{MumbleMates - Namenseingabe}
+    \centering
+    \includegraphics[width=\textwidth]{mumblemates-name-prompt.png}
+\end{figure}
+
+
+\subsection {Nachrichtenverwaltung und -persistenz}
+
+Die Nachrichten werden in einer Liste im Arbeitsspeicher gespeichert und werden daher nicht persistiert.
+
+Die Sortierung der Nachrichten erfolgt nach dem FIFO-Prinzip (First In, First Out). Das bedeutet, dass die älteste Nachricht zuerst angezeigt wird und die neueste Nachricht zuletzt angezeigt wird.
+
 \begin{figure}[h]
     \caption{MumbleMates im Terminal}
     \centering
     \includegraphics[width=\textwidth]{chat-tui.png}
 \end{figure}
 
+\newpage
 
 
+\subsection{Peer-Discovery und -Verwaltung}
 
-\section{Peer-Discovery und -Verwaltung}
-
-\subsection{Peer-Discovery}
+\subsubsection{Peer-Discovery}
 
 Für die Peer-Discovery wird ein mDNS (Multicast DNS) verwendet, um Peers im lokalen Netzwerk zu entdecken. Jeder Peer sendet periodisch mDNS-Anfragen, um andere Peers zu finden und sich mit ihnen zu verbinden. \cite{mdns}
 
-\subsection{Peer-Verwaltung}
+\subsubsection{Peer-Verwaltung}
 
 Das Netzwerk von Peers ist dynamisch.
 Ein Peer kann jederzeit das Netzwerk betreten oder verlassen. Beim Verlassen eines Peers wird der verbleibenden Peers die neue Konfiguration (Liste der aktiven Peers) übermittelt, sodass das Netzwerk stets aktuell bleibt.
 
-\section{Fehlerbehandlung und Robustheit}
+
+
+\subsection{Fehlerbehandlung und Robustheit}
 
 Wenn eine Verbindung zu einem Peer unterbrochen wird, versucht der Peer automatisch, die Verbindung nach einer festgelegten Zeitspanne erneut aufzubauen. Dieser Prozess hilft dabei, die Stabilität des Netzwerks zu gewährleisten.
 
-\subsection{Lastverteilung}
+Schlägt der Versand einer Nachricht fehl, wird der Peer automatisch entfernt.
+
+\subsubsection{Lastverteilung}
 
 Da es keine zentrale Instanz gibt, die alle Verbindungen verwaltet, wird die Last gleichmässig auf alle Peers im Netzwerk verteilt. Jeder Peer ist für die Verwaltung seiner eigenen Verbindungen verantwortlich, wodurch die Skalierbarkeit des Systems erhöht wird.
 
@@ -88,9 +114,9 @@ Wir unterscheiden zwischen zwei Workflows:
     \centering
     \includegraphics[width=\textwidth]{technical-docs-action.png}
 \end{figure}
-    
 
 
+\newpage
 \section{Testing}
 
 Um sicherzustellen, dass die Applikation korrekt funktioniert und keine Fehler enthält, wurden verschiedene Tests durchgeführt.
